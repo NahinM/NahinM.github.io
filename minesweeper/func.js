@@ -90,6 +90,13 @@ function getDataReady(){
 
 // starting the game
 function startGame(){
+    mine = [];
+    data = [];
+    isFlag = false;
+    totalMines = 0;
+    TotalFound = 0;
+    gameOver = false;
+    totalFlag = 0;
     size = Number(document.getElementById("Size").value);
     board.style.gridTemplateColumns = `repeat(${size},50px)`;
     frame();
