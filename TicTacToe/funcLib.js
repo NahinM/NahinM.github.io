@@ -3,6 +3,7 @@ const playerMsg = document.getElementById("player");
 let player = true;
 let draw = 0;
 let cellMarked;
+let end = false;
 
 function init(){
     for(let i=0;i<9;i++){
@@ -22,12 +23,14 @@ function startGame(){
 } startGame();
 
 function reStart(){
+    end = false;
     for(let i=0; i<9; i++){
         document.getElementById(`${i}`).innerHTML = '';
     } startGame();
 }
 
 board.addEventListener('click', (e)=> {
+    if(end) return;
     let id = e.target.id;
     mark(id);
 });
@@ -38,6 +41,7 @@ function mark(id){
     cell.innerHTML = player?"X":"O";
     if(iswin()) {
         playerMsg.innerHTML = `player:${player?"X":"O"} Won`;
+        end = true;
         return;
     }
     draw++;
