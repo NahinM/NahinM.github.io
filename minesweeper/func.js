@@ -130,7 +130,7 @@ nav.addEventListener("click",(e)=>{
     if(id=="nav") return;
     isFlag = (id=="btf");
     document.getElementById(id).style.border = "1px solid #00fffb";
-    document.getElementById(id=="btf"?"btc":"btf").style.border = "1px solid yellow";
+    document.getElementById(id=="btf"?"btc":"btf").style.border = "1px solid rgb(102, 102, 0)";
 });
 
 let onetime = false;
