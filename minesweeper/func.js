@@ -90,13 +90,6 @@ function getDataReady(){
 
 // starting the game
 function startGame(){
-    mine = [];
-    data = [];
-    isFlag = false;
-    totalMines = 0;
-    TotalFound = 0;
-    gameOver = false;
-    totalFlag = 0;
     size = Number(document.getElementById("Size").value);
     board.style.gridTemplateColumns = `repeat(${size},50px)`;
     frame();
@@ -138,4 +131,10 @@ nav.addEventListener("click",(e)=>{
     isFlag = (id=="btf");
     document.getElementById(id).style.border = "1px solid #00fffb";
     document.getElementById(id=="btf"?"btc":"btf").style.border = "1px solid yellow";
+});
+
+let onetime = false;
+document.getElementById("startGame").addEventListener("click",()=>{
+    if(!onetime) startGame();
+    onetime = true;
 });
