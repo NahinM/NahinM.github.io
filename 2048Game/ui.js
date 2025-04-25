@@ -30,13 +30,13 @@ document.addEventListener("keydown", (e)=> {
 
 let startX, startY;
 
-document.addEventListener('touchstart', (e) => {
+window.addEventListener('touchstart', (e) => {
   e.preventDefault();
   startX = e.touches[0].clientX;
   startY = e.touches[0].clientY;
 });
 
-document.addEventListener('touchend', (e) => {
+window.addEventListener('touchend', (e) => {
   const endX = e.changedTouches[0].clientX;
   const endY = e.changedTouches[0].clientY;
 
