@@ -11,6 +11,13 @@
     <div style="height: 700px;position: fixed;left:50%">
         <div id="board" class="w3-display-middle"></div>
     </div>
+    <script>
+        document.addEventListener('touchmove', function(event) {
+            if (event.touches[0].clientY > 0) {
+                event.preventDefault();
+            }
+        });
+    </script>
     <script src="data.js"></script>
     <script src="func.js"></script>
     <script src="ui.js"></script>
