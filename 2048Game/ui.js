@@ -18,7 +18,7 @@ function frame(){
 getNum();
 frame();
 
-window.addEventListener("keydown", (e)=> {
+document.addEventListener("keydown", (e)=> {
     if(e.key!="w" && e.key!="s" && e.key!="a" && e.key!="d" && e.key != "ArrowUp" && e.key != "ArrowDown" && e.key != "ArrowLeft" && e.key != "ArrowRight") return;
     if(e.key=="w" || e.key== "ArrowUp") swapAction(up);
     if(e.key=="s" || e.key=="ArrowDown") swapAction(down);
@@ -30,12 +30,12 @@ window.addEventListener("keydown", (e)=> {
 
 let startX, startY;
 
-window.addEventListener('touchstart', (e) => {
+document.addEventListener('touchstart', (e) => {
   startX = e.touches[0].clientX;
   startY = e.touches[0].clientY;
 });
 
-window.addEventListener('touchend', (e) => {
+document.addEventListener('touchend', (e) => {
   const endX = e.changedTouches[0].clientX;
   const endY = e.changedTouches[0].clientY;
 
