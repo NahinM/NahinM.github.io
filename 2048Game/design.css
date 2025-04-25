@@ -1,6 +1,6 @@
 body{
     background-color: rgb(82, 82, 82);
-    overscroll-behavior: contain;
+    overscroll-behavior: none;
 }
 
 #board{
