@@ -184,13 +184,13 @@
 
     window.addEventListener('keydown',(e)=>{
         switch(e.key){
-            case 'ArrowUp': Ground.dir = "up";
+            case 'ArrowUp': if(Ground.dir!="down") Ground.dir = "up";
                 break;
-            case 'ArrowDown': Ground.dir = "down";
+            case 'ArrowDown': if(Ground.dir!="up") Ground.dir = "down";
                 break;
-            case 'ArrowLeft': Ground.dir = "left";
+            case 'ArrowLeft': if(Ground.dir!="right")Ground.dir = "left";
                 break;
-            case 'ArrowRight': Ground.dir = "right";
+            case 'ArrowRight': if(Ground.dir!="left") Ground.dir = "right";
                 break;
             case 'p':
                 if(Ground.state != "pause" ){
@@ -261,22 +261,22 @@ function handleTouchEnd(e) {
   if(Math.max(Math.abs(diffX) , Math.abs(diffY))<100) return;
   if (Math.abs(diffX) > Math.abs(diffY)) { // Horizontal swipe
     if (diffX > 0) {
-        Ground.dir = "left";
-      console.log("Swiped Left");
+        if(Ground.dir!="right") Ground.dir = "left";
+    //   console.log("Swiped Left");
       // Call your function for left swipe
     } else {
-        Ground.dir = "right";
-      console.log("Swiped Right");
+        if(Ground.dir!="left") Ground.dir = "right";
+    //   console.log("Swiped Right");
       // Call your function for right swipe
     }
   } else { // Vertical swipe
     if (diffY > 0) {
-        Ground.dir = "up";
-      console.log("Swiped Up");
+        if(Ground.dir!="down") Ground.dir = "up";
+    //   console.log("Swiped Up");
       // Call your function for up swipe
     } else {
-        Ground.dir = "down";
-      console.log("Swiped Down");
+        if(Ground.dir!="up") Ground.dir = "down";
+    //   console.log("Swiped Down");
       // Call your function for down swipe
     }
   }
@@ -287,4 +287,5 @@ window.addEventListener('touchend', handleTouchEnd, false);
 
 </script>
 </body>
+
 </html>
