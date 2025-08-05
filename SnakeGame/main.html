@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0%;
+            background-color: black;
+            overscroll-behavior-y: contain;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="myCanvas" width="400" height="400" style="border:1px solid #d3d3d3;position: fixed;"></canvas>
+<script>
+
+    window.addEventListener('beforeunload', function(event) {
+        event.preventDefault();
+        return ;
+    });
+
+    const w_width = window.innerWidth, w_heigth = window.innerHeight;
+    document.getElementById("myCanvas").width = w_width;
+    document.getElementById("myCanvas").height = w_heigth;
+
+    var cell = function(x,y,width,height,colr){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.colr = colr;
+        this.draw = function(colr=this.colr){
+            ctx = Ground.ctx;
+            ctx.fillStyle = colr;
+            ctx.fillRect(this.x,this.y,this.width,this.height);
+        }
+    }
+
+    var Ground = {
+        canvas : document.getElementById("myCanvas"),
+        cells : [],
+        snake : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        snake_colr : "white",
+        bgClr : "green",
+        dir : "right",
+        state : "start",
+        score : 0,
+        food : -1,
+        lim : 1,
+        start : function(){
+            this.ctx = this.canvas.getContext("2d");
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            
+            let z = 8;
+            this.elmx=Math.floor(this.canvas.width/z);
+            this.elmy=Math.floor(this.canvas.height/z);
+
+            const of_x=(this.canvas.width-this.elmx*z)/2,of_y=(this.canvas.height-this.elmy*z)/2;
+            for(let j=0;j<this.elmy;j++){
+                for(let i=0;i<this.elmx; i++){
+                    this.cells.push(new cell(of_x+i*z,of_y+j*z,z,z,this.bgClr));
+                }
+            }
+
+            this.interval = setInterval(frame,70);
+        },
+
+        goUp : function(){
+            let next = this.snake[this.snake.length-1] - this.elmx;
+            if(next>=0 && this.cells[next].colr!=this.snake_colr) return next;
+            return -1;
+        },
+        goDown : function(){
+            let next = this.snake[this.snake.length-1] + this.elmx;
+            if(next<this.cells.length && this.cells[next].colr!=this.snake_colr) return next;
+            return -1;
+        },
+        goLeft : function(){
+            const x = this.snake[this.snake.length-1]%this.elmx;
+            let next = this.snake[this.snake.length-1]-1;
+            // console.log(next);
+            if(x-1>=0 && this.cells[next].colr!=this.snake_colr) return next;
+            return -1;
+        },
+        goRight : function(){
+            const x = this.snake[this.snake.length-1]%this.elmx;
+            let next = this.snake[this.snake.length-1]+1;
+            // console.log(next);
+            if(x+1<this.elmx && this.cells[next].colr!=this.snake_colr) return next;
+            return -1;
+        },
+
+        move : function(){
+            let next = -1;
+            switch(this.dir){
+                case "up": next = this.goUp();
+                    break;
+                case "down": next = this.goDown();
+                    break;
+                case "left": next = this.goLeft();
+                    break;
+                case "right": next = this.goRight();
+                    break;
+            }
+            if(next != -1){
+                if(next==this.food) {
+                    this.food = getRndInt();
+                    this.lim = 0;
+                    this.score++;
+                }else{
+                    let a = this.snake.shift();
+                    this.cells[a].colr = this.bgClr;
+                }
+                this.snake.push(next);
+            }else {
+                this.snake.forEach(s=>{this.cells[s].colr=this.bgClr});
+                clearInterval(this.interval);
+                Ground.state = "end";
+                this.clear();
+                this.ctx.fillStyle = "white";
+                this.ctx.font = "30px Arial";
+                this.ctx.fillText("THE END!", 10, 50+30);
+            }
+        },
+        
+        clear : function(){
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+
+    function getRndInt() {
+        const mn=0,mx=Ground.elmx*Ground.elmy-1;
+        let num = Math.floor(Math.random() * (mx - mn + 1) ) + mn;
+        while(Ground.cells[num].colr!=Ground.bgClr){
+            num = Math.floor(Math.random() * (mx - mn + 1) ) + mn;
+        }
+        return num;
+    }
+
+    function frame(){
+        let i = 0;
+        Ground.snake.forEach( ith => {
+            i++;
+            Ground.cells[ith].colr = i==Ground.snake.length?"black":Ground.snake_colr;
+        });
+        Ground.cells.forEach( cel => {
+            cel.draw();
+        });
+        if(Ground.food!=-1) Ground.cells[Ground.food].draw("#07eaf2");
+        ctx = Ground.canvas.getContext("2d");
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${Ground.score}`, 10, 20);
+        Ground.lim= (Ground.lim+1)%Math.max(Ground.elmx,Ground.elmy);
+        if(Ground.lim==0){
+            Ground.food = getRndInt();
+        }
+        Ground.move();
+    }
+
+    function onStart(){
+        ctx = Ground.canvas.getContext("2d");
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.fillText("snake game", 10, 50+30);
+        ctx.fillText("click to start", 10, 50+60);
+    }
+    onStart();
+
+    function restart(){
+        Ground.clear();
+        Ground.dir = "right";
+        Ground.snake.forEach(s=>{
+            s.colr = Ground.bgClr;
+        });
+        Ground.snake = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+        Ground.score = 0;
+        Ground.food = -1;
+        Ground.interval = setInterval(frame,70);
+    }
+
+    window.addEventListener('keydown',(e)=>{
+        switch(e.key){
+            case 'ArrowUp': Ground.dir = "up";
+                break;
+            case 'ArrowDown': Ground.dir = "down";
+                break;
+            case 'ArrowLeft': Ground.dir = "left";
+                break;
+            case 'ArrowRight': Ground.dir = "right";
+                break;
+            case 'p':
+                if(Ground.state != "pause" ){
+                    clearInterval(Ground.interval);
+                    Ground.state = "pause";
+                }else {
+                    Ground.interval = setInterval(frame,70);
+                    Ground.state = "play";
+                }
+                break;
+        }
+    });
+
+
+    window.addEventListener('click', ()=>{
+        switch(Ground.state){
+            case "start":
+                Ground.state = "play";
+                Ground.start();
+                break;
+            case "pause":
+                Ground.state = "play";
+                Ground.interval = setInterval(frame,70);
+                break;
+            case "play":
+                Ground.state = "pause";
+                clearInterval(Ground.interval);
+                ctx = Ground.canvas.getContext("2d");
+                ctx.fillStyle = "white";
+                ctx.font = "30px Arial";
+                ctx.fillText("Game paused", 10, 50+30);
+                ctx.fillText("Click to paly", 10, 50+60);
+                break;
+            case "end":
+                Ground.state = "restart";
+                Ground.clear();
+                onStart();
+                break;
+            case "restart":
+                Ground.state = "play";
+                restart();
+            break;
+        }
+    });
+
+    let initialX = null;
+let initialY = null;
+
+function startTouch(e) {
+  initialX = e.touches[0].clientX;
+  initialY = e.touches[0].clientY;
+}
+
+function handleTouchEnd(e) {
+  if (initialX === null || initialY === null) {
+    return;
+  }
+
+  const endX = e.changedTouches[0].clientX;
+  const endY = e.changedTouches[0].clientY;
+
+  const diffX = initialX - endX;
+  const diffY = initialY - endY;
+
+  // Reset initial values
+  initialX = null;
+  initialY = null;
+  if(Math.max(Math.abs(diffX) , Math.abs(diffY))<100) return;
+  if (Math.abs(diffX) > Math.abs(diffY)) { // Horizontal swipe
+    if (diffX > 0) {
+        Ground.dir = "left";
+      console.log("Swiped Left");
+      // Call your function for left swipe
+    } else {
+        Ground.dir = "right";
+      console.log("Swiped Right");
+      // Call your function for right swipe
+    }
+  } else { // Vertical swipe
+    if (diffY > 0) {
+        Ground.dir = "up";
+      console.log("Swiped Up");
+      // Call your function for up swipe
+    } else {
+        Ground.dir = "down";
+      console.log("Swiped Down");
+      // Call your function for down swipe
+    }
+  }
+}
+
+window.addEventListener('touchstart', startTouch, false);
+window.addEventListener('touchend', handleTouchEnd, false);
+
+</script>
+</body>
+</html>
