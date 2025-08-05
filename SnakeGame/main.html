@@ -258,7 +258,7 @@ function handleTouchEnd(e) {
   // Reset initial values
   initialX = null;
   initialY = null;
-  if(Math.max(Math.abs(diffX) , Math.abs(diffY))<100) return;
+  if(Math.max(Math.abs(diffX) , Math.abs(diffY))<50) return;
   if (Math.abs(diffX) > Math.abs(diffY)) { // Horizontal swipe
     if (diffX > 0) {
         if(Ground.dir!="right") Ground.dir = "left";
@@ -289,3 +289,4 @@ window.addEventListener('touchend', handleTouchEnd, false);
 </body>
 
 </html>
+
